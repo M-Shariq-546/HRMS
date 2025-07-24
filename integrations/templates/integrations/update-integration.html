@@ -1,0 +1,16 @@
+{% load i18n %}
+{% load static %}
+{% load recruitmentfilters %}
+<form method="post" action="{% url 'integrations:connect-integration' service %}" enctype="multipart/form-data">
+  {% csrf_token %}
+  {% for field in update_form %}
+    <div class="form-group">
+      {{ field.label_tag }}
+      {{ field }}
+      {% if field.errors %}
+        <div class="text-danger">{{ field.errors }}</div>
+      {% endif %}
+    </div>
+  {% endfor %}
+  <button type="submit" class="oh-btn oh-btn--secondary mt-4 mr-0 pl-4 pr-5 oh-btn--w-100-resp">Save</button>
+</form>

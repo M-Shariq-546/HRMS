@@ -1,0 +1,31 @@
+{% extends 'index.html' %}
+{% block content %} {% load static %}
+<style>
+    .loan-type {
+        background: #73bbe12b;
+        font-size: .8rem;
+        padding: 4px 8px;
+        border-radius: 10px;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #357579;
+    }
+</style>
+{% load i18n %}
+{% include 'payroll/loan/nav.html' %}
+<div id="loanContainer">
+    {% if records %}
+        {% include 'payroll/loan/records_card.html' %}
+    {% else %}
+      {% include 'filter_tags.html' %}
+      <div class="oh-wrapper">
+        <div class="oh-card">
+          <div class="oh-404__wrapper">
+            <img src="{% static 'images/ui/loan.png' %}" class="oh-404__image" alt="" />
+            <h5 class="oh-404__subtitle">{% trans "There are currently no loans to consider." %}</h5>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+</div>
+{% endblock %}

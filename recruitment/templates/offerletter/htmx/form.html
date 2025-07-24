@@ -1,0 +1,97 @@
+{% load i18n %}{% load recruitmentfilters %}
+{% if form.instance.id %}
+<form id="editForm" hx-post="{% url "view-mail-template" form.instance.id %}" hx-target="#viewTemplateModalBody">
+{% else %}
+<form id="createForm" hx-post="{% url "create-mail-template" %}" hx-target="#viewTemplateModalBody">
+{% endif %}
+    <section>
+        <div id="viewTemplateModalContainer">
+            <div class="my-3" id="keyResultCard">
+                <div class="oh-card oh-card--no-shadow oh-card__body">
+                    <div class="oh-input__group">
+                        <label class="oh-input__label mt-0" for="keyTitle">{% trans "Title" %}</label>
+                        {{ form.title }}
+                    </div>
+                    <div class="oh-input__group">
+                        <label class="oh-input__label mt-2" for="keyTitle">{% trans "Body" %}</label>
+                        {{ form.body }}
+                    </div>
+                    <div class="form-hint" style="margin-top: 10px; font-size: 14px; color: #888;">
+                        {% trans "Hint: Type '{' to get sender or receiver data" %}
+                    </div>
+                    <div class="oh-input__group">
+                        <label class="oh-input__label mt-2" for="keyTitle">{% trans "Company" %}</label>
+                        {{ form.company_id }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <button id="submitFormButton" type="submit" hidden ></button>
+</form>
+<script src="https://cdn.jsdelivr.net/npm/tinymce@7/tinymce.min.js" 
+        onload="initializeTinyMCE()"></script>
+<script>
+    function initializeTinyMCE() {
+        {% if form.instance.title %}
+            setModalLabel("{{ form.instance.title|escapejs }}", "#viewTemplateModalLabel");
+        {% endif %}
+
+        var searchWords = {{ searchWords|safe }};
+        var mentions = Object.keys(searchWords);
+
+        tinymce.init({
+            selector: "#id_body",
+            menubar: false,
+            plugins: 'autolink lists link image charmap print preview media',
+            toolbar: 'undo redo | bold italic underline | bullist numlist | link image media | alignleft aligncenter alignright alignjustify | print preview',
+            // Configure TinyMCE to work without domain validation issues
+            branding: false,
+            promotion: false,
+            // Set up proper content security
+            extended_valid_elements: '*[*]',
+            valid_children: '+body[style]',
+            // Disable external services that might cause domain warnings
+            external_plugins: {},
+            // Set up proper initialization
+            init_instance_callback: function(editor) {
+                // Suppress domain warnings
+                console.log('TinyMCE initialized successfully');
+            },
+            setup: function (editor) {
+                editor.on("keyup", function (event) {
+                    var content = editor.getContent();
+                    var match = content.match(/\B{(\w*)$/);
+                    if (match) {
+                        var keyword = match[1];
+                        var pattern = new RegExp(keyword, "i"); // Case-insensitive search
+                        var filteredMentions = mentions.filter(item => pattern.test(item));
+
+                        if (filteredMentions.length) {
+                            var word = searchWords[filteredMentions[0]];
+                            editor.setContent(content.replace(/\B{(\w*)$/, 
+                                "{% templatetag openbrace %}{% templatetag openbrace %}" + word + "{% templatetag closebrace %}{% templatetag closebrace %}"
+                            ));
+                        }
+                    }
+                });
+            }
+        });
+    }
+    $(document).ready(function () {
+        // Initialize TinyMCE on document ready
+
+        // Reinitialize TinyMCE after HTMX content swap
+        document.body.addEventListener('htmx:afterSwap', function () {
+            tinymce.remove("#id_body"); // Remove previous instance before re-initialization
+            initializeTinyMCE();
+        });
+    });
+    // #submitFormButton Ensures the text is changed to tinymce before addition
+    $("#submitFormButton").click(function () {
+        tinymce.triggerSave(); 
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        initializeTinyMCE();
+    });
+</script>

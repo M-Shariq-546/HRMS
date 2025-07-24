@@ -1,0 +1,222 @@
+/* Integration Card Styles */
+.integration-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1; /* Keep cards below navbar elements */
+}
+
+.integration-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.integration-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.integration-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.slack-logo {
+  background: linear-gradient(135deg, #4A154B, #611f69);
+}
+
+.documenso-logo {
+  background: linear-gradient(135deg, #10B981, #059669);
+}
+
+.logo-wise {
+  background: linear-gradient(135deg, #00B9FF, #0099CC);
+}
+
+.integration-info {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.integration-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 4px;
+  text-transform: capitalize;
+}
+
+.integration-status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-connected {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.status-disconnected {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.integration-description {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.integration-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-connect {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-connect:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.btn-disconnect {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-disconnect:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+.btn-settings {
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-settings:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.btn-transactions {
+  background: #00B9FF;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-transactions:hover {
+  background: #0099CC;
+  transform: translateY(-1px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .integration-card {
+    padding: 16px;
+  }
+  
+  .integration-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .integration-logo {
+    margin-right: 0;
+  }
+  
+  .integration-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .btn-connect,
+  .btn-disconnect,
+  .btn-settings,
+  .btn-transactions {
+    justify-content: center;
+  }
+} 

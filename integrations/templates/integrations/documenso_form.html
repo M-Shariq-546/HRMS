@@ -1,0 +1,12 @@
+<form method="post" action="{% url 'integrations:connect-integration' 'documenso' %}">
+    {% csrf_token %}
+    <label for="id_documenso_api_key">API Key:</label>
+    {{ form.documenso_api_key }}
+    {% if form.documenso_api_key.errors %}
+      <div class="form-error">
+        {{ form.documenso_api_key.errors }}
+      </div>
+    {% endif %}
+    <button type="submit">Submit</button>
+  </form>
+  

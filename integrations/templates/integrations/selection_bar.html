@@ -1,0 +1,252 @@
+{% load static %}
+{% block content %}
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f0f0;
+      padding: 40px;
+    }
+
+    button {
+      background-color: #e53935;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      overflow: auto;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 24px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 800px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 24px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: #888;
+    }
+
+    .close-btn:hover {
+      color: #000;
+    }
+
+    .template-section {
+      margin-top: 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .template-header {
+      background: #1976d2;
+      color: #fff;
+      padding: 12px 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .template-header:hover {
+      background: #1565c0;
+    }
+
+    .collapser-icon {
+      font-size: 16px;
+      transition: transform 0.3s ease;
+    }
+
+    .collapsed .collapser-icon {
+      transform: rotate(-90deg);
+    }
+
+    .template-body {
+      display: none;
+      padding: 0 16px 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+    }
+
+    th {
+      background: #f0f0f0;
+    }
+
+    tr:not(:last-child) {
+      border-bottom: 1px solid #eee;
+    }
+
+    .circle {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      color: #fff;
+      text-align: center;
+      line-height: 32px;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .CO { background: #ffb300; } .DE { background: #b39ddb; } .JP { background: #90caf9; }
+    .JR { background: #1976d2; } .WT { background: #26a69a; } .RT { background: #0288d1; }
+    .RA { background: #d32f2f; } .ET { background: #ffb74d; } .ES { background: #8bc34a; }
+    .RS { background: #fbc02d; } .BF { background: #bdbdbd; } .WR { background: #607d8b; }
+
+    select, input[type="checkbox"] {
+      font-size: 1em;
+    }
+  </style>
+
+  <button onclick="openModal()">Open Template Mapper</button>
+
+  <div id="templateModal" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">&times;</button>
+      <h2>Map Template Fields</h2>
+      <div id="template-container"></div>
+    </div>
+  </div>
+
+  <script>
+    const templates = [
+      {
+        name: 'Employee Template',
+        fields: [
+          { code: 'CO', label: 'Company' },
+          { code: 'DE', label: 'Department' },
+          { code: 'JP', label: 'Job position' },
+          { code: 'JR', label: 'Job role' }
+        ]
+      },
+      {
+        name: 'Work Schedule Template',
+        fields: [
+          { code: 'WT', label: 'Work type' },
+          { code: 'RT', label: 'Rotating work type' },
+          { code: 'RA', label: 'Rotating work type assign' },
+          { code: 'ET', label: 'Employee type' },
+          { code: 'ES', label: 'Employee shift' },
+          { code: 'RS', label: 'Rotating shift' }
+        ]
+      }
+    ];
+
+    const availableVariables = [
+      { id: 'company_id', label: 'Company ID' },
+      { id: 'department_id', label: 'Department ID' },
+      { id: 'job_position', label: 'Job Position' },
+      { id: 'work_type', label: 'Work Type' },
+      { id: 'employee_type', label: 'Employee Type' },
+      { id: 'shift', label: 'Shift' },
+    ];
+
+    function openModal() {
+      document.getElementById('templateModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('templateModal').style.display = 'none';
+    }
+
+    // Render collapsers inside modal
+    const container = document.getElementById('template-container');
+
+    templates.forEach((template, index) => {
+      const section = document.createElement('div');
+      section.className = 'template-section';
+
+      const header = document.createElement('div');
+      header.className = 'template-header';
+      header.innerHTML = `
+        ${template.name}
+        <span class="collapser-icon">&#9654;</span>
+      `;
+
+      const body = document.createElement('div');
+      body.className = 'template-body';
+
+      const table = document.createElement('table');
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Active</th>
+            <th>Field</th>
+            <th>Map to Variable</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${template.fields.map(field => `
+            <tr>
+              <td><input type="checkbox" id="active-${field.code}-${index}" /></td>
+              <td>
+                <span class="circle ${field.code}">${field.code}</span>
+                ${field.label}
+              </td>
+              <td>
+                <select id="map-${field.code}-${index}">
+                  <option value="">-- Select variable --</option>
+                  ${availableVariables.map(v => `<option value="${v.id}">${v.label}</option>`).join('')}
+                </select>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `;
+      body.appendChild(table);
+      section.appendChild(header);
+      section.appendChild(body);
+      container.appendChild(section);
+
+      // Collapse logic
+      header.addEventListener('click', () => {
+        const isOpen = body.style.display === 'block';
+        body.style.display = isOpen ? 'none' : 'block';
+        header.classList.toggle('collapsed', !isOpen);
+      });
+    });
+
+    // Click outside modal to close
+    window.onclick = function(event) {
+      const modal = document.getElementById('templateModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+  </script>
+{% endblock %}

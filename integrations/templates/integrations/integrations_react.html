@@ -1,0 +1,161 @@
+{% extends 'index.html' %}
+{% block content %}
+{% load static %}
+{% load i18n %}
+
+<div class="oh-wrapper">
+   <div class="oh-main__topbar">
+    <div class="oh-main__titlebar oh-main__titlebar--left">
+      <h1 class="oh-main__titlebar-title fw-bold">
+        {% trans "Integrations" %}
+      </h1>
+    </div>
+  </div>
+  
+  <!-- React App Container -->
+  <div id="integrations-react-app"></div>
+</div>
+
+<!-- Load React and ReactDOM -->
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+<!-- Load Babel for JSX transformation -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<!-- Load the React app -->
+<script src="{% static 'dist/js/integrations-app.js' %}"></script>
+
+<!-- Ensure ionicons are loaded for icons -->
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<style>
+  /* Ensure the React app takes full width */
+  #integrations-react-app {
+    width: 100%;
+    min-height: 400px;
+    position: relative;
+    z-index: 1; /* Lower z-index than navbar elements */
+  }
+  
+  /* Ensure navbar and dropdowns stay on top of React app */
+  .oh-navbar {
+    z-index: 9999 !important;
+  }
+  
+  .oh-navbar__notification-tray {
+    z-index: 9999 !important;
+  }
+  
+  .oh-dropdown__menu {
+    z-index: 9999 !important;
+  }
+    
+  /* Ensure modals appear above everything */
+  .oh-modal {
+    z-index: 9999 !important;
+  }
+  
+  .integration-modal {
+    z-index: 9999 !important;
+  }
+  
+  /* Ensure alerts appear above everything */
+  .oh-alert-container {
+    z-index: 9999 !important;
+  }
+  
+  /* SweetAlert z-index override - ensure it appears above everything */
+  .swal2-container {
+    z-index: 99999 !important;
+  }
+  
+  /* Loading state for React app */
+  .integrations-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: #6b7280;
+  }
+  
+  .integrations-loading .spinner {
+    margin-bottom: 16px;
+  }
+  
+  .integrations-loading p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  /* Error state for React app */
+  .integrations-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: #dc2626;
+  }
+  
+  .integrations-error p {
+    margin-bottom: 16px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  .integrations-error button {
+    padding: 8px 16px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+  }
+  
+  .integrations-error button:hover {
+    background: #2563eb;
+  }
+</style>
+
+<script>
+  // Debug: Display CSRF token in console
+  function getCSRFToken() {
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    const token = match ? match[1] : "";
+    console.log('CSRF Token:', token);
+    return token;
+  }
+  
+  // Display CSRF token on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== CSRF Token Debug ===');
+    console.log('CSRF Token:', getCSRFToken());
+    console.log('All Cookies:', document.cookie);
+    console.log('=======================');
+  });
+
+  // Fallback if React fails to load
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      const container = document.getElementById('integrations-react-app');
+      if (container && container.children.length === 0) {
+        container.innerHTML = `
+          <div class="integrations-error">
+            <p>Failed to load integrations. Please refresh the page.</p>
+            <button onclick="window.location.reload()">Retry</button>
+          </div>
+        `;
+      }
+    }, 5000);
+  });
+</script>
+{% endblock %} 

@@ -1,0 +1,154 @@
+{% extends 'index.html' %}
+{% load i18n %}
+{% load static %}
+{% load recruitmentfilters %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-slack me-2"></i>
+                        {% trans "Select Slack Channel" %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'integrations:save_selected_channel' %}" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <input type="hidden" name="company_id" value="{{ company.id }}">
+
+                        <div class="mb-4">
+                            <label for="channel" class="form-label fw-bold">
+                                <i class="fas fa-hashtag me-2"></i>
+                                {% trans "Select Channel" %}
+                            </label>
+                            <select name="channel_id" id="channel" class="form-select form-select-lg" required>
+                                <option value="" selected disabled>{% trans "Choose a channel..." %}</option>
+                                {% for channel in channels %}
+                                    <option value="{{ channel.id }}">
+                                        # {{ channel.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                {% trans "Select the channel where notifications will be sent" %}
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save me-2"></i>
+                                {% trans "Save Channel" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+
+    // Add search functionality to select
+    const channelSelect = document.getElementById('channel');
+    const originalOptions = Array.from(channelSelect.options);
+    
+
+    // Add search functionality
+    const searchInput = document.getElementById('channelSearch');
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        // Clear current options
+        channelSelect.innerHTML = '';
+        
+        // Add default option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.text = '{% trans "Choose a channel..." %}';
+        defaultOption.selected = true;
+        defaultOption.disabled = true;
+        channelSelect.add(defaultOption);
+        
+        // Filter and add matching options
+        originalOptions.forEach(option => {
+            if (option.text.toLowerCase().includes(searchTerm)) {
+                channelSelect.add(option.cloneNode(true));
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+    padding: 1.5rem;
+}
+
+.form-select {
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+#channelSearch {
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+#channelSearch:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+</style>
+{% endblock %}
+{% endblock %} 

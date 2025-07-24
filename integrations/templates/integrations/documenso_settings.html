@@ -1,0 +1,21 @@
+{% load dict_extras %}
+
+{% for template in templates %}
+  <div class="template-card">
+    <h3>{{ template.name }}</h3>
+    <ul>
+      {% for field in template.fields %}
+        <li>
+          <strong>{{ field.label }}</strong>: 
+          {{ saved_mappings|get_item:template.id|get_item:field.id|default:"Not mapped" }}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endfor %}
+
+{% if notification_message %}
+  <div class="mt-4">
+    <strong>Notification Message:</strong> {{ notification_message }}
+  </div>
+{% endif %}

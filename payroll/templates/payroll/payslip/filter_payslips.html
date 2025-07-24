@@ -1,0 +1,230 @@
+{% load static %} {% load i18n %}
+
+<input type="hidden" name="month" value="{{request.GET.month}}" />
+<input type="hidden" name="year" value="{{request.GET.year}}" />
+<input type="hidden" name="group_by" value="{{request.GET.end_date}}" />
+<div class="oh-dropdown__filter-body">
+	<div class="oh-accordion">
+		<div class="oh-accordion-header">{% trans "Payslip" %}</div>
+		<div class="oh-accordion-body">
+			<div class="row">
+				{% if perms.payroll.view_payslip %}
+					<div class="col-sm-12">
+						<div class="oh-input-group">
+							<label class="oh-label" for="{{f.form.employee_id.id_for_label}}">{% trans "Employee" %}</label>
+							<select id="employeeDropdown" name="employee_id" class="oh-input" multiple></select>
+						</div>
+					</div>
+				{% endif %}
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.start_date.id_for_label}}">{% trans "Start Date" %}</label>
+						{{ f.form.start_date }}
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.end_date.id_for_label}}">{% trans "End Date" %}</label>
+						{{ f.form.end_date }}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.status.id_for_label}}">{% trans "Status" %}</label>
+						{{ f.form.status }}
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.group_name.id_for_label}}">{% trans "Batch" %}</label>
+						{{ f.form.group_name }}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+					<div class="col-sm-12">
+						<div class="oh-input-group">
+							<label class="oh-label" for="{{f.form.sent_to_employee.id_for_label}}">{% trans "Mail Sent" %}</label>
+							{{ f.form.sent_to_employee }}
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
+	<div class="oh-accordion">
+		<div class="oh-accordion-header">{% trans "Advanced" %}</div>
+		<div class="oh-accordion-body">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.start_date_from.id_for_label}}">{% trans "Start Date From" %}</label>
+						{{ f.form.start_date_from }}
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.start_date_till.id_for_label}}">{% trans "Start Date Till" %}</label>
+						{{ f.form.start_date_till }}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.end_date_from.id_for_label}}">{% trans "End Date From" %}</label>
+						{{ f.form.end_date_from }}
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.end_date_till.id_for_label}}">{% trans "End Date Till" %}</label>
+						{{ f.form.end_date_till }}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.gross_pay__lte.id_for_label}}"
+							>{% trans "Gross Pay Less Than or Equal" %}</label
+						>
+						{{ f.form.gross_pay__lte }}
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.gross_pay__gte.id_for_label}}"
+							>{% trans "Gross Pay Greater or Equal" %}</label
+						>
+						{{ f.form.gross_pay__gte }}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.deduction__lte.id_for_label}}"
+							>{% trans "Deduction Less Than or Equal" %}</label
+						>
+						{{ f.form.deduction__lte }}
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.deduction__gte.id_for_label}}"
+							>{% trans "Deduction Greater or Equal" %}</label
+						>
+						{{ f.form.deduction__gte }}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.net_pay__lte.id_for_label}}"
+							>{% trans "Net Pay Less Than or Equal" %}</label
+						>
+						{{ f.form.net_pay__lte }}
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="oh-input-group">
+						<label class="oh-label" for="{{f.form.net_pay__gte.id_for_label}}"
+							>{% trans "Net Pay Greater or Equal" %}</label
+						>
+						{{ f.form.net_pay__gte }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% comment %} {{f.form}} {% endcomment %}
+</div>
+<div class="oh-dropdown__filter-footer">
+	<button
+		class="oh-btn oh-btn--secondary oh-btn--small w-100 filterButton"
+		id="filterSubmit"
+	>
+		{% trans "Filter" %}
+	</button>
+</div>
+<script>
+$(document).ready(function () {
+	const selectedEmployees = new Set();
+	let selectedEmployeesList = []
+
+	function formatEmployee(employee) {
+		// If the name is already available, use it even if loading flag is set
+		if (employee.loading && !employee.text) {
+			return "Loading...";
+		}
+		return $("<span>").text(employee.text || employee.name || "Unnamed");
+	}
+
+	// Init Select2
+	$('#employeeDropdown').select2({
+		placeholder: "{% trans 'Select Employees' %}",
+		ajax: {
+			url: "{% url 'employees-list' %}",
+			dataType: 'json',
+			delay: 250,
+			data: function (params) {
+				return {
+					q: params.term,
+					exclude: selectedEmployeesList,
+				};
+			},
+			processResults: function (data) {
+				return {
+					results: data.map(function(emp) {
+						return { id: emp.id, text: emp.name };
+					})
+				};
+			},
+			cache: true
+		},
+		templateResult: formatEmployee,
+		width: '100%'
+	});
+
+	// Preload selected employees
+
+	// Manage inclusion/exclusion
+	$('#employeeDropdown').on('select2:select', function (e) {
+		const id = e.params.data.id.toString();
+		if (!selectedEmployeesList.includes(id)) {
+			selectedEmployeesList.push(id);
+		}
+	});
+
+	// Update list on unselect
+	$('#employeeDropdown').on('select2:unselect', function (e) {
+		const id = e.params.data.id.toString();
+		selectedEmployeesList = selectedEmployeesList.filter(val => val !== id);
+	});
+});
+</script>
+
+<script>
+	$("#filterForm").submit(function (e) {
+		var formData = $(this).serialize();
+		count = 0;
+		formData.split("&").forEach(function (field) {
+			parts = field.split("=");
+			value = parts[1];
+			if (value != "") {
+				count++;
+			}
+		});
+		$("#filterCount").empty();
+		if (count > 0) {
+			$("#filterCount").text("(" + count + ")");
+		}
+		$("#field").attr("hx-vals", `{'data':${formData}}`);
+		// $('#field').attr('hx-vals',`{'data':${formData}}` );
+	});
+</script>

@@ -1,0 +1,138 @@
+{% load i18n %}{% load static recruitmentfilters %}
+
+<div
+  class="oh-modal"
+  id="candidateExport"
+  role="dialog"
+  aria-labelledby="candidateExport"
+  aria-hidden="true"
+ >
+  <div class="oh-modal__dialog" id="candidateExportModalBody"></div>
+</div>
+<section
+class="oh-wrapper oh-main__topbar"
+x-data="{searchShow: false}"
+ >
+<div class="oh-main__titlebar oh-main__titlebar--left">
+  <h1 class="oh-main__titlebar-title fw-bold">
+    {% trans "Integrations" %}
+  </h1>
+  <a
+    class="oh-main__titlebar-search-toggle "
+    role="button"
+    aria-label="Toggle Search"
+    @click="searchShow = !searchShow"
+    >
+    <ion-icon
+      name="search-outline"
+      class="oh-main__titlebar-serach-icon"
+    ></ion-icon>
+  </a>
+</div>
+<form
+    hx-get='{% url "integrations:search-integration" %}'
+    id="filterForm"
+    hx-target="#section"
+    hx-trigger="keyup changed delay:300ms from:input[name='name']"
+    class="d-flex"
+  >
+
+  <div class="oh-main__titlebar oh-main__titlebar--right">
+
+    <div
+      class="oh-input-group oh-input__search-group"
+      :class="searchShow ? 'oh-input__search-group--show' : ''"
+    >
+      <ion-icon
+        name="search-outline"
+        class="oh-input-group__icon oh-input-group__icon--left"
+      ></ion-icon>
+      <input
+        type="text"
+        placeholder="{% trans 'Search' %}"
+        id="integration-search"
+        name='name'
+        class="oh-input oh-input__icon"
+        aria-label="Search Input"
+      />
+    </div>
+    <ul class="oh-view-types ml-2" style="margin-bottom: 0;" id="view-type">
+    </ul>
+    <input type="hidden" name="view" id="filterView" value="">
+    </div>
+  </div>
+</form>
+
+
+<div
+    class="oh-modal"
+    id="bulkResumeUpload"
+    role="dialog"
+    aria-labelledby="bulkResumeUpload"
+    aria-hidden="true"
+>
+    <div class="oh-modal__dialog">
+        <div class="oh-modal__dialog-header">
+            <h2 class="oh-modal__dialog-title" id="bulkResumeUploadLabel">
+                {% trans "Upload Resumes" %}
+            </h2>
+            <button class="oh-modal__close" aria-label="Close">
+                <ion-icon name="close-outline"></ion-icon>
+            </button>
+            <div
+                class="oh-modal__dialog-body mb-4 p-0 pt-2"
+                id="bulkResumeUploadBody"
+            >
+            </div>
+        </div>
+    </div>
+</div>
+
+</section>
+<script>
+  $(document).ready(function () {
+    function candidateFilter(element) {
+      var search = $("#candidate-search").val();
+      const form = document.querySelector("#filterForm");
+      const formData = new FormData(form);
+      const queryString = new URLSearchParams(formData).toString();
+      const searchParams = new URLSearchParams(queryString);
+      const queryObject = Object.fromEntries(searchParams.entries());
+      view = $(element).attr("data-view");
+      queryObject["search"] = search;
+      queryObject["view"] = view;
+      stringQueyObject = JSON.stringify(queryObject);
+      // $('#list').attr('hx-vals', stringQueyObject);
+      // $('#card').attr('hx-vals', stringQueyObject);
+    }
+
+    $("#candidate-search").keyup(function (e) {
+      $(".candidate-view-type").attr(
+        "hx-vals",
+        `{"search":"${$(this).val()}"}`
+      );
+    });
+    $(".candidate-view-type").on("click", function (e) {
+      let view = $(this).attr("data-view");
+      var currentURL = window.location.href;
+      if (view != undefined) {
+        if (/\?view=[^&]+/.test(currentURL)) {
+          newURL = currentURL.replace(/\?view=[^&]+/, "?view=" + view);
+        } else {
+          var separator = currentURL.includes("?") ? "&" : "?";
+          newURL = currentURL + separator + "view=" + view;
+        }
+        history.pushState({}, "", newURL);
+        $("#candidate-search").attr("hx-vals", `{"view":"${view}"}`);
+        $("#filterForm").attr("hx-vals", `{"view":"${view}"}`);
+        $(".oh-btn--view-active").removeClass("oh-btn--view-active");
+        $(this).children("a").addClass("oh-btn--view-active");
+      }
+    });
+    $('#id_field').on('change',function(){
+      $('.filterButton')[0].click();
+    })
+  });
+</script>
+
+<script src="{% static '/candidate/bulk.js' %}"></script>

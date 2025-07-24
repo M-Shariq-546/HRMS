@@ -1,0 +1,350 @@
+{% load static i18n horillafilters %}
+{% load payrollfilters %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    body {
+      background: #fff;
+      color: #000;
+      font-family: "Inter", sans-serif;
+      -webkit-font-feature-settings: "tnum";
+      font-feature-settings: "tnum";
+      padding: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 860px;
+      margin: auto;
+    }
+
+    .header {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+      border: 1px solid black;
+      padding: 16px 20px 12px;
+      font-weight: bold;
+    }
+
+    .header .logo {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      max-width: 128px;
+    }
+
+    .logo img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .header .content {
+      -webkit-box-flex: 1;
+      -ms-flex: 1;
+      flex: 1;
+      margin-left: -112px;
+    }
+
+    .header h1 {
+      font-size: 16px;
+    }
+
+    .header p {
+      margin: 4px 0;
+    }
+
+    .header span {
+      display: inline-block;
+      padding: 0 24px;
+    }
+
+    .details {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      border-left: 1px solid black;
+      border-right: 1px solid black;
+      padding: 8px 12px;
+      font-weight: bold;
+    }
+
+    .details>div {
+     -webkit-box-flex: 1;
+      -ms-flex: 1;
+      flex: 1;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+    }
+
+    .details p {
+      margin: 2px 0;
+    }
+
+    .details p:last-child {
+      padding-top: 16px;
+      -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+      flex-grow: 1;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: end;
+      -ms-flex-align: end;
+      align-items: end;
+    }
+
+    .details strong {
+      display: inline-block;
+      min-width: 160px;
+    }
+
+    .table-wrapper {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: start;
+      -ms-flex-align: start;
+      align-items: start;
+    }
+
+    .table-wrapper+.table-wrapper {
+      margin-top: -1px;
+    }
+
+    .table {
+      width: 50%;
+      border-collapse: collapse;
+    }
+
+    .table+.table {
+      margin-left: -1px;
+    }
+
+    .table,
+    .table th,
+    .table td {
+      border: 1px solid black;
+    }
+
+    .table th,
+    .table td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    .table td:last-child {
+      width: 140px;
+      text-align: right;
+    }
+
+    .total td {
+      padding: 15px 10px;
+    }
+
+    .table th {
+      background: #ccc;
+      font-weight: bold;
+    }
+
+    .highlight {
+      background: #ddd;
+      font-weight: bold;
+    }
+
+    .amount {
+      width: 125px;
+    }
+
+    .footer {
+      font-weight: bold;
+      padding: 10px;
+      border: 1px solid black;
+      border-top: none;
+    }
+
+    .disclaimer {
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    /* @media print {
+      body {
+        background: none;
+        color: #000;
+        font-size: 12px;
+      }
+
+      .container {
+        width: 100%;
+        border: none;
+        box-shadow: none;
+        padding: 10px;
+      }
+
+      .footer {
+        border-top: none;
+      }
+
+      .table th,
+      .table td {
+        padding: 6px;
+      }
+
+      .header h1 {
+        font-size: 18px;
+      }
+    } */
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <img src="{{company.get_icon_url_for_email}}" style='max-width:80%; height:auto;' alt="Logo" />
+      </div>
+      <div class="content">
+      {% if employee.employee_work_info.company_id %}
+        <h1>{{employee.employee_work_info.company_id}} </h1>
+        <p>{{employee.employee_work_info.company_id.address}}
+                  {{employee.employee_work_info.company_id.country}} {{employee.employee_work_info.company_id.state}}, {{employee.employee_work_info.company_id.city}}
+                  {{employee.employee_work_info.company_id.zip}}</p>
+        <p><span>Phone: {{employee.employee_work_info.company_id.phone}},</span> <span>E-Mail: {{employee.employee_work_info.company_id.email}}</span></p>
+      {% else %}
+      <h1>{{company}} - Headquarters</h1>
+        <p>{{company.address}}
+                  {{company.country}} {{company.state}}, {{company.city}}
+                  {{company.zip}}</p>
+        <p><span>Phone: {{company.phone}},</span> <span>E-Mail: {{company.email}}</span></p>
+      {% endif %}
+        <p>Salary Slip for {{salary_slip_date}}</p>
+      </div>
+    </div>
+    <div class="details">
+      <div>
+        <p><strong>{% trans "Employee ID :" %}</strong> {{employee.badge_id}}</p>
+        <p><strong>{% trans "Date of Joining :" %}</strong> {{employee.employee_work_info.date_joining}}</p>
+        <p><strong>{% trans "Employement Status :" %}</strong> {% if employee.get_employee_type %}{{employee.get_employee_type}} {% else %} ---- {% endif %}</p>
+        <p><strong>{% trans "Length of Service :" %}</strong> {{employee.get_working_duration}}</p>
+        <p><strong>{% trans "Days Worked :" %}</strong> {{payslip.get_days_in_month}}</p>
+      </div>
+      <div>
+        <p><strong>{% trans "Employee Name :" %}</strong> {{employee}}</p>
+        <p><strong>{% trans "Designation :" %}</strong> {% if employee.employee_work_info.job_position_id %}{{employee.employee_work_info.job_position_id}} {% else %} ---- {% endif %}</p>
+        <p><strong>{% trans "Bank Acc./Cheque No :" %}</strong> {% if employee.employee_bank_details.account_number %}{{employee.employee_bank_details.account_number}} {% else %} ---- {% endif%}</p>
+        <p><strong>{% trans "Date :" %}</strong> {{month_end_name}}</p>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table class="table">
+        <tr>
+          <th>{% trans "Salary and Reimbursement" %}</th>
+          <th class="amount"></th>
+        </tr>
+       {% with total_allowances=all_allowances|length %}
+                {% with max_rows=10 %}
+                    {% for allowance in all_allowances %}
+                    <tr>
+                        <td>{{ allowance.title }}</td>
+                        <td>{{ allowance.amount|floatformat:2|currency_symbol_position }}</td>
+                    </tr>
+                    {% endfor %}
+
+                {% with max_rows|subtract:total_allowances as empty_rows %}
+                    {% for _ in empty_rows|default:0|times %}
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    {% endfor %}
+                {% endwith %}
+                {% endwith %}
+            {% endwith %}
+      </table>
+      <table class="table">
+        <tr>
+          <th>{% trans "Deduction" %}</th>
+          <th class="amount"></th>
+        </tr>
+
+        {% with total_deductions=all_deductions|length %}
+    {% with max_deductions=10 %}
+        {% for deduction in all_deductions %}
+          <tr>
+            <td>{{ deduction.title }}</td>
+            <td>{{ deduction.amount|floatformat:2|currency_symbol_position }}</td>
+          </tr>
+        {% endfor %}
+        {% with max_deductions|subtract:total_deductions as empty_rows %}
+            {% for _ in empty_rows|times %}
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+              </tr>
+            {% endfor %}
+        {% endwith %}
+
+    {% endwith %}
+{% endwith %}
+      </table>
+    </div>
+    <div class="table-wrapper">
+      <table class="table total">
+        <tr class="highlight">
+          <td>{% trans "Basic Pay" %}</td>
+          <td class="amount">{{basic_pay|floatformat:2|currency_symbol_position}}</td>
+        </tr>
+        <tr class="highlight">
+          <td>{% trans "Gross Pay" %}</td>
+          <td class="amount">{{gross_pay|floatformat:2|currency_symbol_position}}</td>
+        </tr>
+      </table>
+      <table class="table total">
+        <tr class="highlight">
+          <td>{% trans "Total Deductions" %}</td>
+          <td class="amount">{{total_deductions|floatformat:2|currency_symbol_position}}</td>
+        </tr>
+        <tr class="highlight">
+          <td>{% trans "Total Net Pay" %}</td>
+          <td class="amount">{{net_pay|floatformat:2|currency_symbol_position}}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="footer">
+      <p>{% trans "Total Net Payable (Total Gross Pay - Total Deduction):" %} {{net_pay|floatformat:2|currency_symbol_position}}</p>
+    </div>
+    <p>Note: All amount in {{currency_symbol}}</p>
+    <p class="disclaimer">
+      <strong>DISCLAIMER:</strong> Your salary is inclusive of all types of Allowances, Bonuses, Annual Leave Encashment
+      etc.
+      <br> Tax amount may be affected with this change.
+    </p>
+  </div>
+</body>
+
+</html>

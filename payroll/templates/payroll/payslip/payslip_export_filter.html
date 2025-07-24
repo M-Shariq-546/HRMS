@@ -1,0 +1,327 @@
+{% load i18n %}
+<!-- Include jQuery and Select2 (skip if already included in your project) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<div class="oh-modal__dialog">
+	<div class="oh-modal__dialog-header">
+		{% if report %}
+		<h2 class="oh-modal__dialog-title">{% trans "Payslip Report" %}</h2>
+		{% else %}
+		<h2 class="oh-modal__dialog-title">{% trans "Export Payslips" %}</h2>
+		{% endif %}
+		<button class="oh-modal__close" aria-label="Close">
+			<ion-icon name="close-outline"></ion-icon>
+		</button>
+		<div
+			class="oh-modal__dialog-body p-0 pt-2"
+			id="payslipReportModalBody"
+		>
+			<form
+				{% if report %}
+					action="{%url 'payslip-detailed-export' %}"
+				{% else %}
+					action="{%url 'payslip-info-export' %}"
+				{% endif %}
+				method="get"
+				onsubmit="event.stopPropagation();$(this).parents().find('.oh-modal--show').last().toggleClass('oh-modal--show');"
+				id="payslipReportForm"
+			>
+				{% csrf_token %}
+				<div id="reportForm">
+					<div class="oh-dropdown__filter-body">
+						{% if not report %}
+						<div class="oh-accordion">
+							<div class="oh-accordion-header">
+								{% trans "Excel columns" %}
+							</div>
+							<div class="oh-accordion-body">
+								<div class="row">
+									<div
+										class="col-sm-12 col-md-12 col-lg-6"
+									>
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="select-all-fields"
+											>
+												<input
+													type="checkbox"
+													id="select-all-fields"
+												/>
+												{% trans "Select All" %}
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									{% for field in export_column.selected_fields %}
+									<div
+										class="col-sm-12 col-md-12 col-lg-4"
+									>
+										<div class="oh-input-group">
+											<label class="oh-label">
+												{{ field }}
+											</label>
+										</div>
+									</div>
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+						{% endif %}
+						<div class="oh-accordion">
+							<div class="oh-accordion-header">
+								{% trans "Payslip" %}
+							</div>
+							<div class="oh-accordion-body">
+								<div class="row">
+									<div class="col-sm-12">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.employee_id.id_for_label}}"
+												multiple>{% trans "Employee" %}
+											</label>
+											<select id="employeeDropdown2" name="employee_id" class="oh-input"
+											multiple></select>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.start_date.id_for_label}}"
+												>{% trans "Start Date" %}</label
+											>
+											{{ export_filter.form.start_date }}
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.end_date.id_for_label}}"
+												>{% trans "End Date" %}</label
+											>
+											{{ export_filter.form.end_date }}
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.status.id_for_label}}"
+												>{% trans "Status" %}</label
+											>
+											{{ export_filter.form.status }}
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.group_name.id_for_label}}"
+												>{% trans "Batch" %}</label
+											>
+											{{ export_filter.form.group_name }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="oh-accordion">
+							<div class="oh-accordion-header">
+								{% trans "Advanced" %}
+							</div>
+							<div class="oh-accordion-body">
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.start_date_from.id_for_label}}"
+												>{% trans "Start Date From" %}
+											</label>
+											{{ export_filter.form.start_date_from }}
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.start_date_till.id_for_label}}"
+												>{% trans "Start Date Till" %}</label
+											>
+											{{ export_filter.form.start_date_till }}
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.end_date_from.id_for_label}}"
+												>{% trans "End Date From" %}</label
+											>
+											{{ export_filter.form.end_date_from }}
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.end_date_till.id_for_label}}"
+												>{% trans "End Date Till" %}</label
+											>
+											{{ export_filter.form.end_date_till }}
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.gross_pay__lte.id_for_label}}"
+												>{% trans "Gross Pay Less Than or Equal" %}</label
+											>
+											{{ export_filter.form.gross_pay__lte }}
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.gross_pay__gte.id_for_label}}"
+												>{% trans "Gross Pay Greater or Equal" %}</label
+											>
+											{{ export_filter.form.gross_pay__gte }}
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.deduction__lte.id_for_label}}"
+												>{% trans "Deduction Less Than or Equal" %}</label
+											>
+											{{ export_filter.form.deduction__lte }}
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.deduction__gte.id_for_label}}"
+												>{% trans "Deduction Greater or Equal" %}</label
+											>
+											{{ export_filter.form.deduction__gte }}
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.net_pay__lte.id_for_label}}"
+												>{% trans "Net Pay Less Than or Equal" %}</label
+											>
+											{{ export_filter.form.net_pay__lte }}
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="oh-input-group">
+											<label
+												class="oh-label"
+												for="{{export_filter.form.net_pay__gte.id_for_label}}"
+												>{% trans "Net Pay Greater or Equal" %}</label
+											>
+											{{ export_filter.form.net_pay__gte }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="oh-dropdown__filter-footer mb-4">
+					<button
+						class="oh-btn oh-btn--secondary oh-btn--small w-100"
+					>
+						{% if report %}
+							{% trans "Download report" %}
+						{% else %}
+							{% trans "Export" %}
+						{% endif %}
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function () {
+	const selectedEmployees = new Set();
+	let selectedEmployeesList = []
+
+	function formatEmployee(employee) {
+		// If the name is already available, use it even if loading flag is set
+		if (employee.loading && !employee.text) {
+			return "Loading...";
+		}
+		return $("<span>").text(employee.text || employee.name || "Unnamed");
+	}
+
+	// Init Select2
+	$('#employeeDropdown2').select2({
+		placeholder: "{% trans 'Select Employees' %}",
+		ajax: {
+			url: "{% url 'employees-list' %}",
+			dataType: 'json',
+			delay: 250,
+			data: function (params) {
+				return {
+					q: params.term,
+					exclude: selectedEmployeesList,
+				};
+			},
+			processResults: function (data) {
+				return {
+					results: data.map(function(emp) {
+						return { id: emp.id, text: emp.name };
+					})
+				};
+			},
+			cache: true
+		},
+		templateResult: formatEmployee,
+		width: '100%'
+	});
+
+	// Preload selected employees
+
+	// Manage inclusion/exclusion
+	$('#employeeDropdown2').on('select2:select', function (e) {
+		const id = e.params.data.id.toString();
+		if (!selectedEmployeesList.includes(id)) {
+			selectedEmployeesList.push(id);
+		}
+	});
+
+	// Update list on unselect
+	$('#employeeDropdown2').on('select2:unselect', function (e) {
+		const id = e.params.data.id.toString();
+		selectedEmployeesList = selectedEmployeesList.filter(val => val !== id);
+	});
+});
+</script>

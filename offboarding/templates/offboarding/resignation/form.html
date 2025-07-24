@@ -1,0 +1,81 @@
+<form hx-post="{% url 'create-resignation-request' %}?instance_id={{form.instance.id}}" hx-target="#resignationModalBody">
+{{form.as_p}}
+</form>
+<script src="https://cdn.jsdelivr.net/npm/tinymce@7/tinymce.min.js" 
+        onload="initializeTinyMCE()"></script>
+<script defer>
+   document.addEventListener("htmx:afterSwap", function() {
+    let descriptionField = document.querySelector("textarea[name='description']");
+    
+    if (descriptionField) {
+        descriptionField.id = "descriptionEditor";  
+        initializeTinyMCE();
+    } else {
+        console.error("Textarea for description not found.");
+    }
+});
+document.addEventListener("htmx:beforeRequest", function() {
+    let editor = tinymce.get('descriptionEditor');
+    if (editor) {
+        editor.save(); 
+    } else {
+        console.error("TinyMCE Editor not found!");
+    }
+    if (tinymce) {
+        tinymce.triggerSave();  // This updates the hidden textarea
+    }
+});
+document.addEventListener("DOMContentLoaded", function () {
+    let modal = document.getElementById("resignationModal");
+    if (modal) {
+        modal.removeAttribute("aria-hidden"); 
+        document.getElementById("resignationModal").removeAttribute("inert");
+    }
+});
+
+</script>
+
+<script>
+  function initializeTinyMCE() {
+    tinymce.init({
+        selector: '#descriptionEditor',  // Use ID selector
+        height: 300,
+        menubar: false,
+        plugins: 'autolink lists link image charmap print preview media',
+        toolbar: 'undo redo | bold italic underline | bullist numlist | link image media | alignleft aligncenter alignright alignjustify | print preview',
+        // Configure TinyMCE to work without domain validation issues
+        branding: false,
+        promotion: false,
+        // Set up proper content security
+        extended_valid_elements: '*[*]',
+        valid_children: '+body[style]',
+        // Disable external services that might cause domain warnings
+        external_plugins: {},
+        // Set up proper initialization
+        init_instance_callback: function(editor) {
+            // Suppress domain warnings
+            console.log('TinyMCE initialized successfully');
+        },
+        setup: function(editor) {
+            editor.on('input', function() {
+                let content = editor.getContent(); 
+                document.getElementById('descriptionEditor').value = content;
+            });
+
+            // Ensure data is saved before HTMX submits
+            document.addEventListener("htmx:beforeRequest", function() {
+                let editor = tinymce.get('descriptionEditor');
+                if (editor) {
+                    editor.save();  // Sync content to hidden <textarea>
+                } else {
+                    console.error("TinyMCE Editor not found!");
+                }
+                if (tinymce) {
+                    tinymce.triggerSave();  // This updates the hidden textarea
+                }
+            });
+        }
+    });
+  }
+    $(".col-md-6").removeClass("col-md-6")
+</script>

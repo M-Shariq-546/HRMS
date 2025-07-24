@@ -1,0 +1,155 @@
+{% load employee_filter %}
+<style>
+  .oh-layout--grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+    padding: 24px;
+  }
+
+  .oh-kanban-card {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 195px;
+  }
+
+  .oh-kanban-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  }
+
+  .oh-kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .oh-kanban-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .oh-kanban-btn {
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    margin-left: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .oh-kanban-btn:hover {
+    background-color: #4338ca;
+  }
+
+  .oh-kanban-body {
+    display: flex;
+    gap: 16px;
+  }
+
+  .oh-kanban-icon {
+    font-size: 40px;
+    color: #4f46e5;
+    margin-top: 25px;
+  }
+
+  .oh-kanban-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    font-size: 14px;
+    color: #374151;
+  }
+
+  .oh-kanban-info span {
+    line-height: 0;
+  }
+
+  .oh-label {
+    font-weight: 500;
+    color: #6b7280;
+    display: inline-block;
+    min-width: 100px;
+  }
+
+  .oh-value {
+    color: #111827;
+    font-weight: 500;
+  }
+
+   /* 📱 Mobile responsiveness */
+   @media (max-width: 768px) {
+    .oh-layout--grid-3 {
+      grid-template-columns: 1fr;
+      padding: 12px;
+    }
+    .oh-kanban-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .oh-kanban-btn {
+      width: 100%;
+      margin-left: 5px;
+    }
+
+    .oh-kanban-body {
+      flex-direction: column;
+    }
+
+    .oh-kanban-icon {
+      align-self: center;
+      margin: 10px 0;
+    }
+
+    .oh-kanban-info {
+      width: 100%;
+    }
+  }
+</style>
+
+<div class="oh-layout--grid-3">
+  {% for document in data %}
+  <div class="oh-kanban-card">
+    <div class="oh-kanban-header">
+      <div class="oh-kanban-title">{{ document.title|truncatechars:25 }}</div>
+      {% if document.recipients.0.signingStatus != 'SIGNED' %}
+        {% if request.user|is_reportingmanager or perms.integrations.view_companyintegration or perms.integrations.change_companyintegration or perms.integrations.add_companyintegration or perms.integrations.delete_companyintegration %}
+          <button class="oh-kanban-btn" onclick="location.href='{% url 'resend-documents' document.id %}'">Resend</button>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <div class="oh-kanban-body">
+      <div class="oh-kanban-icon">
+        <ion-icon name="document-text-outline"></ion-icon>
+      </div>
+      <div class="oh-kanban-info">
+        <span><span class="oh-label">Status:</span> {% if document.recipients.0.readStatus == 'NOT_OPENED' %}Not Opened{% else %}{{ document.recipients.0.readStatus|default:"Not Read" }}{% endif %}</span>
+        <span><span class="oh-label">Sent At:</span> {{ document.createdAt|iso_to_datetime }}</span>
+        <span><span class="oh-label">Signed Status:</span> {% if document.recipients.0.signingStatus == 'NOT_SIGNED' %}Not Signed{% else %}{{ document.recipients.0.signingStatus|default:"Not Signed" }}{% endif %}</span>
+        <span><span class="oh-label">Signed At:</span> 
+          {% if document.recipients.0.signedAt %}
+            {{ document.recipients.0.signedAt|iso_to_datetime }}
+          {% else %}
+            Not signed yet
+          {% endif %}
+        </span>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>

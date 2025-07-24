@@ -1,0 +1,19 @@
+{% extends 'index.html' %}{% block content %}
+{% load static %}
+{% load i18n %}
+<section class="oh-wrapper oh-main__topbar " x-data="{searchShow: false}">
+  <div class="oh-main__titlebar oh-main__titlebar--left">
+    <h1 class="oh-main__titlebar-title fw-bold">{% trans "My Attendances" %}</h1>
+  </div>
+</section>
+
+<div class="oh-wrapper">
+  <div class="oh-card">
+    <div class="oh-404__wrapper">
+      <img src="{% static 'images/ui/present.png' %}" class="oh-404__image" alt=""/>
+      <h5 class="oh-404__subtitle">{% trans "There are no attendance records to display." %}</h5>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

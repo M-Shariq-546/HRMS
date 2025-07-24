@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Interveiw</title>
+      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div style="background-color: #F6F7F7; width: 100%; margin: 0; padding: 0;">
+      <table align="center" cellpadding="0" cellspacing="12px" width="100%" style="max-width: 624px; margin: auto;">
+        <tbody>
+
+          <!-- Header -->
+          <tr><td>
+            <table width="100%" style="background-color: #FFFFFF; padding: 40px 0 36px 0;">
+              <tbody>
+                <tr>
+                  <td align="center">
+                    <img style="max-width: 200px;" src="{{protocol}}://{{host}}{{instance.candidate_id.recruitment_id.company_id.icon.url}}">
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <h1 style="font-family: 'Montserrat'; font-style: normal; font-weight: 600; font-size: 24px; line-height: 36px; color: #172327; margin: 0; padding-top: 16px; padding-bottom: 16px;">{{company_name}}</h1>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <p style="font-family: 'Montserrat'; font-style: normal; font-weight: 600; font-size: 12px; line-height: 20px; letter-spacing: 2px; text-transform: uppercase; color: #ACB0B1; margin: 0;">Phone: {{company_phone}}, E-Mail: {{company_email}}</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td></tr>
+
+          <!-- Body -->
+          <tr><td>
+            <table width="100%" style="background-color: #FFFFFF; padding: 29px;">
+              <tbody>
+                <tr>
+                  <td>
+                    <h1 style="font-family: 'Montserrat'; font-style: normal; font-weight: 400; font-size: 20px; line-height: 32px; color: #172327;margin: 0; padding-bottom: 24px;">Invitation to Interview</h1>
+                    <p style="font-family: 'Montserrat'; font-style: normal; font-weight: 400; font-size: 14px; line-height: 24px; color: #7A8183; margin: 0; padding-bottom: 16px;">{% if not is_edited%}We are glad to tell you that you have been invited {% else %} Your interview has been re-scheduled {% endif %} for onsite interview on {{ interview_date}} at {{interview_time}} at {{instance.recruitement.companuy_id.address}}</p>
+                    <p style="font-family: 'Montserrat'; font-style: normal; font-weight: 400; font-size: 14px; line-height: 24px; color: #7A8183; margin: 0; padding-bottom: 16px;">Please make sure your availability and if you want to reschedule it do let us know ate info@example-company.com</p>
+                    <p style="font-family: 'Montserrat'; font-style: normal; font-weight: 400; font-size: 14px; line-height: 24px; color: #7A8183; margin: 0;">Regards,</p>
+                    <p style="font-family: 'Montserrat'; font-style: normal; font-weight: 400; font-size: 14px; line-height: 24px; color: #7A8183; margin: 0;">HR</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td></tr>
+
+          <!-- Footer -->
+          <tr><td>
+            <table width="100%" style="margin-top: 10px; margin-bottom: 10px;">
+              <tbody align="center">
+                <tr>
+                  <td style="padding-bottom: 10px;">
+                    <p style="font-family: 'Montserrat'; font-style: normal; font-weight: 400; font-size: 12px; line-height: 20px; color: #7A8183; margin: 0;">427/428, Block G-IV, M.A. Johar Town, Lahore</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <a href="#" style="text-decoration: none;"><span style="font-family: 'Montserrat'; font-style: normal; font-weight: 400; font-size: 12px; line-height: 20px; color: #495255; padding: 4px 12px; background-color: #FFFFFF; border-radius: 4px;">Unsubcribe</span></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

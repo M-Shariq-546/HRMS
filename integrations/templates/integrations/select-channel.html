@@ -1,0 +1,96 @@
+{% extends 'index.html' %}
+{% load i18n %}
+{% load static %}
+{% load recruitmentfilters %}
+
+{% block content %}
+<div class="oh-modal oh-modal--show">
+  <div class="oh-modal__dialog">
+    <div class="oh-modal__dialog-header">
+      <h2 class="oh-modal__dialog-title">{% trans "Select Slack Channel" %}</h2>
+      <button type="button" class="oh-modal__close" aria-label="Close">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+    </div>
+    <div class="modal-body oh-modal__dialog-body">
+      <form method="POST" action="{% url 'integrations:save_selected_channel' %}" class="needs-validation" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="company_id" value="{{ company.id }}">
+          <div class="row">
+            <div class="col-12">
+              <div class="oh-label__info">
+                <label for="channel" class="oh-label">
+                    {% trans "Channel" %}
+                </label>
+              </div>
+              <select name="channel_id" id="channel" class="form-control w-100" required>
+                  <option value="" selected disabled>{% trans "Choose a channel..." %}</option>
+                  {% for channel in channels %}
+                      <option value="{{ channel.id }}">
+                          # {{ channel.name }}
+                      </option>
+                  {% endfor %}
+              </select>
+              <div class="form-text">
+                  {% trans "Select the channel where notifications will be sent" %}
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="oh-btn oh-btn--secondary mt-4 mr-0 pl-4 pr-5 oh-btn--w-100-resp">{% trans "Save Channel" %}</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+
+    // Add search functionality to select
+    const channelSelect = document.getElementById('channel');
+    const originalOptions = Array.from(channelSelect.options);
+
+
+    // Add search functionality
+    const searchInput = document.getElementById('channelSearch');
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+
+        // Clear current options
+        channelSelect.innerHTML = '';
+
+        // Add default option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.text = '{% trans "Choose a channel..." %}';
+        defaultOption.selected = true;
+        defaultOption.disabled = true;
+        channelSelect.add(defaultOption);
+
+        // Filter and add matching options
+        originalOptions.forEach(option => {
+            if (option.text.toLowerCase().includes(searchTerm)) {
+                channelSelect.add(option.cloneNode(true));
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style></style>
+{% endblock %}
+{% endblock %}

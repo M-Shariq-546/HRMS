@@ -1,0 +1,38 @@
+{% load i18n %}
+<div id="encashment_container">
+  <form action="{% url 'company-timezone-update' %}" method="POST" class="settings-label mb-1">
+  {% csrf_token %}
+  
+  <div class="oh-inner-sidebar-content__header mt-3">
+    <h2 class="oh-inner-sidebar-content__title">{% trans "Time Zone" %}</h2>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-3">
+      <div class="oh-input-group">
+        <div class="oh-label__info" for="{{ form.timezone.id_for_label }}">
+          <label class="oh-label" for="{{ form.timezone.id_for_label }}">{% trans "Time Zone" %}</label>
+        </div>
+        {{ timezone_form.timezone }}
+      </div>
+    </div>
+
+    <div class="col-sm-12 col-md-12 col-lg-3">
+      <div class="oh-input-group">
+        <div class="oh-label__info" for="{{ form.company.id_for_label }}">
+          <label class="oh-label" for="{{ form.company.id_for_label }}">{% trans "Company" %}</label>
+        </div>
+        {{ timezone_form.company }}
+      </div>
+    </div>
+
+    <div class="d-flex align-items-end col-sm-12 col-md-12 col-lg-3">
+      <button type="submit" class="oh-btn oh-btn--secondary mt-2 mr-0 oh-btn--w-100-resp">
+        {% trans "Save Changes" %}
+      </button>
+    </div>
+  </div>
+
+  <div class="oh-inner-sidebar-content__footer"></div>
+</form>
+</div>

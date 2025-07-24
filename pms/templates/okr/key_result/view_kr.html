@@ -1,0 +1,24 @@
+{% extends 'index.html' %} {% block content %} {% load i18n %} {% load horillafilters %} {% load static %}
+
+{% include "okr/key_result/kr_nav.html" %}
+
+<div class="oh-wrapper">
+
+    <div id="krs-container" >
+      {% if krs %}
+        {% if request.GET.view == 'list' %}
+          {% include 'okr/key_result/kr_list.html' %}
+        {% else %}
+          {% include 'okr/key_result/kr_card.html' %}
+        {% endif %}
+      {% else %}
+      <div class="oh-card">
+        <div class="oh-404__wrapper">
+          <img src="{% static 'images/ui/payment.png' %}" class="oh-404__image" alt=""/>
+          <h5 class="oh-404__subtitle">{% trans "There are currently no key results to consider." %}</h5>
+        </div>
+      </div>
+      {% endif %}
+      </div>
+    </div>
+{% endblock content %}

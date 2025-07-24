@@ -1,0 +1,130 @@
+/* Main Integrations App Styles */
+.integrations-app {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  position: relative;
+  z-index: 1; /* Keep React app below navbar elements */
+}
+
+.integrations-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.integrations-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: #dc2626;
+  position: relative;
+  z-index: 1;
+}
+
+.integrations-error button {
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.integrations-error button:hover {
+  background: #2563eb;
+}
+
+.integrations-container {
+  margin-left: 220px; /* same as sidebar width */
+  max-width: 1200px;
+  padding: 40px 16px 0 16px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1; /* Keep container below navbar */
+}
+
+.integrations-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-left: -20%;
+  margin-top: 32px;
+  position: relative;
+  z-index: 1; /* Keep grid below navbar */
+}
+
+/* Integration Cards - ensure they don't interfere with navbar */
+.integration-card {
+  position: relative;
+  z-index: 1; /* Keep cards below navbar elements */
+}
+
+/* Integration card buttons and interactive elements */
+.integration-card button,
+.integration-card .integration-actions {
+  position: relative;
+  z-index: 1;
+}
+
+/* Spinner */
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #1976d2;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 1100px) {
+  .integrations-grid {
+    grid-template-columns: repeat(2, 1fr);
+    margin-left: -1%;
+  }
+}
+
+@media (max-width: 700px) {
+  .integrations-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .integrations-container {
+    padding: 16px 4px 0 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .integrations-container {
+    padding: 8px 0 0 0;
+  }
+} 
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+  .integrations-container {
+    margin-left: 0;
+    padding: 16px 4px 0 4px;
+  }
+} 

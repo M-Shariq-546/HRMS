@@ -1,0 +1,202 @@
+{% load i18n %}
+<div id="ack-message-{{employee.id}}">
+</div>
+<form onsubmit="$(this).closest('.oh-modal--show').removeClass('oh-modal--show')"
+   hx-post='{% url "send-mail-to-employee" %} ' class="oh-general__tab-target oh-profile-section"
+  id='ack-form-{{employee.id}}' hx-target="#ack-message-{{employee.id}}" hx-encoding="multipart/form-data">
+  <input type="hidden" value="{{employee.id}}" name="id">
+  <div class="modal-body">
+    {% if employee %}
+    <div class="oh-timeoff-modal__profile-content">
+      <div class="oh-profile mb-2">
+        <div class="oh-profile__avatar">
+          <img src="{{employee.get_avatar}}"
+            class="oh-profile__image me-2">
+        </div>
+        <div class="oh-timeoff-modal__profile-info">
+          <span class="oh-timeoff-modal__user fw-bold">{{employee.get_full_name}}</span>
+          <span class="oh-timeoff-modal__user m-0" style="font-size: 18px; color: #4d4a4a">
+            {{employee.get_job_position}} /
+            {{employee.get_department}}</span>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    <div class="form-group mt-2">
+      <label for="employees">
+        <h6>{% trans "Also send to" %}</h6>
+      </label>
+      <select class="oh-select oh-select-2" {% if not employee %} required {% endif %} name="employees" id="employees" multiple>
+        {% for employee in employees %}
+          <option value="{{employee.id}}">{{employee}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group mt-2">
+      <label for="subject">
+        <h6>{% trans "Subject" %}</h6>
+      </label>
+      <input required type="text" placeholder="Important Reminder" name='subject' class="oh-input w-100" id="subject"
+        placeholder="Subject">
+    </div>
+    <div class="form-group mt-2">
+      <label for="template">
+        <h6>{% trans "Template" %}</h6>
+      </label>
+      <select name="template" class="w-100 oh-select" id="template" onchange="templateChange($(this))">
+        <option value="">----</option>
+        {% for template in templates %}
+        <option value="{{template.id}}">{{template.title}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group mt-2">
+      <label for="body">
+        <h6>{% trans "Message Body" %}</h6>
+      </label>
+      <textarea name="body" required class="oh-input w-100" id="body" cols="30" rows="2"></textarea>
+    </div>
+    <div class="form-group mt-2">
+      <label for="template_attachments">
+        <h6>{% trans "Template as Attachment" %}</h6>
+      </label>
+      <select name="template_attachments" class="w-100 oh-select" id="template_attachments" multiple>
+        {% for template in templates %}
+        <option value="{{template.id}}">{{template.title}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group mt-2">
+      <label for="other_attachments">
+        <h6>{% trans "Other Attachments" %}</h6>
+      </label>
+      <input type="file" name="other_attachments" id="other_attachments" multiple style="display: block;">
+    </div>
+    <div class="modal-footer d-flex flex-row-reverse mt-3">
+      <input type="submit" class="oh-btn oh-btn--secondary submit-send" data-message-id="ack-message-{{employee.id}}"
+        name="submit" id="submit" onclick="sendMail()" value="{% trans 'Send Mail' %}">
+    </div>
+</form>
+
+<!-- Use jsDelivr CDN instead of TinyMCE Cloud to avoid domain validation issues -->
+<script src="https://cdn.jsdelivr.net/npm/tinymce@7/tinymce.min.js" 
+        onload="initializeTinyMCE()"></script>
+<script>
+  function initializeTinyMCE() {
+    tinymce.init({
+        selector: '#body',
+        height: 300,
+        menubar: false,
+        plugins: 'autolink lists link image charmap print preview media',
+        toolbar: 'undo redo | bold italic underline | bullist numlist | link image media | alignleft aligncenter alignright alignjustify | print preview',
+        readonly: false,
+        // Configure TinyMCE to work without domain validation issues
+        branding: false,
+        promotion: false,
+        // Set up proper content security
+        extended_valid_elements: '*[*]',
+        valid_children: '+body[style]',
+        // Disable external services that might cause domain warnings
+        external_plugins: {},
+        // Set up proper initialization
+        init_instance_callback: function(editor) {
+            // Suppress domain warnings
+            console.log('TinyMCE initialized successfully');
+        },
+        setup: function(editor) {
+        editor.on('init', function() {
+});
+      }
+    });
+}
+
+  button = document.querySelector('.submit-send')
+  button.onclick = function (event) {
+    var element = event.target;
+    var valid = true
+
+    var editor = tinymce.get("body");
+    if (editor) {
+        editor.save();  // Update the textarea before sending
+    }
+
+    if (!$('#employees').val().length && "{{employee|default:'false'|safe}}"=="false") {
+      valid=false
+      $(`#messages`).html($(`
+      <div class="oh-alert oh-alert--animated oh-alert--danger" role="alert">
+        This field is required
+        </div>
+        `));
+    }
+    else if (!$("#subject").val().length) {
+      valid=false
+      $(`#messages`).html($(`
+      <div class="oh-alert oh-alert--animated oh-alert--danger" role="alert">
+        The message subject is required
+        </div>
+        `));
+    }
+    else if (!$("#body").val().trim().length) {  // Check trimmed value
+      valid = false;
+      $(`#messages`).html(`<div class="oh-alert oh-alert--danger">The message body is required</div>`);
+    }
+    if (valid) {
+      Swal.fire({
+        title: "Processing",
+        text: "Mail will sent on the background",
+        icon: "info"
+      });
+    }
+  };
+
+  $(document).ready(function () {
+    $(".note-dropzone").after('<button id="viewButton" background: #fefefe; border: solid #bfbaba 1px; border-radius: 10px; margin: 5px 2px 2px 2px; onclick="event.preventDefault();viewMail()">View</button>');
+    $("#viewButton").after('<button id="previewButton" background: #fefefe; border: solid #bfbaba 1px; border-radius: 10px; margin: 5px 2px 2px 2px; onclick="event.preventDefault();previewMail()">Preview</button>');
+    $('.note-toolbar').after('<div class = "note-editable d-none" id ="previewDiv"> </div>')
+    initializeTinyMCE();
+    var selectedIds = JSON.parse($("#selectedInstances").attr("data-ids"));
+    $("#employees[name=employees]select[multiple]").val(selectedIds).change()
+
+  });
+  function templateChange(e) {
+    var id = e.val();
+    if (id.length) {
+      $.ajax({
+        type: "get",
+        url: `/employee/get-template/${id}/`,
+        data: { "instance_id": "{{employee.id}}" },
+        dataType: "Json",
+        success: function (response) {
+          var editor = tinymce.get("body");
+          if (editor) {
+              editor.setContent(response.body);
+              editor.save();  // Ensure the content updates in the textarea
+          }
+          $('#ack-form-{{employee.id}} [class="note-editable"]').html(response.body)
+        }
+      });
+    }
+  };
+  function previewMail(){
+    var id = $('#template').val();
+    var body = tinymce.get("body").getContent();
+      if (id.length) {
+        $.ajax({
+          type: "get",
+          url: `/employee/get-mail-preview/${employee.id}/`,
+          data: {"body":body },
+          dataType: "Json",
+          success: function (response) {
+            $('#ack-form-{{employee.id}} [class="note-editable"]').addClass('d-none')
+            $('#previewDiv').html(response.body)
+            $('#previewDiv').removeClass('d-none')
+          }
+        });
+      }
+  }
+
+  function viewMail(){
+    $('.note-editable').removeClass('d-none')
+    $('#previewDiv').addClass('d-none')
+  }
+</script>

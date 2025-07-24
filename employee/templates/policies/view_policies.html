@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+{% block content %}
+{% load i18n %}
+{% load static %}
+  {% include 'policies/nav.html' %}
+  <div class="oh-wrapper" id="policyContainer">
+    {% if policies %}
+      	{% include 'policies/records.html' %}
+    {% else %}
+    <div class="oh-card">
+      <div class="oh-404__wrapper">
+        <img src="{% static 'images/ui/insurance-policy.png' %}" class="oh-404__image" alt=""/>
+        <h5 class="oh-404__subtitle">{% trans "There are currently no policies to consider." %}</h5>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}
