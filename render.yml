@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: hrms-django
+    env: docker
+    repo: https://github.com/M-Shariq-546/HRMS
+    plan: free
+    region: oregon
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
