@@ -35,5 +35,16 @@ services:
       timeout: 5s
       retries: 5
 
+  ngrok:
+    image: ngrok/ngrok:latest
+    depends_on:
+      - server
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    command:
+      - "http"
+      - "server:8000"
+    restart: unless-stopped
+
 volumes:
   horilla-data:
