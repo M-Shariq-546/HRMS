@@ -1,6 +1,6 @@
 FROM python:3.10-slim-bullseye
 
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && apt-get install -y \
     libcairo2-dev \
@@ -12,22 +12,18 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app/
+WORKDIR /app
 
 COPY package*.json ./
-
-# Install npm dependencies
-RUN npm install
-
 COPY . .
 
-# Build React components (doesn't need Python env vars)
-RUN npm run build
+RUN npm install
+RUN npm run build  # Build React app (ensure Webpack writes to static/dist)
+
+RUN pip install --no-cache-dir -r requirements.txt
 
 RUN chmod +x /app/entrypoint.sh
 
-RUN pip install -r requirements.txt
-
 EXPOSE 8000
 
-CMD ["python3", "manage.py", "runserver"]
+CMD ["gunicorn", "horilla.wsgi:application", "--bind", "0.0.0.0:8000"]
