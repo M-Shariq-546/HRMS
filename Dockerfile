@@ -37,7 +37,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy built React assets from previous stage
 COPY --from=frontend-builder /app/static/dist/ ./static/dist/
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 8000
 
