@@ -1,42 +1,44 @@
+# --------- Stage 1: React Build ---------
+FROM node:18 AS frontend-builder
+
+WORKDIR /app
+
+# Copy only frontend source and package files
+COPY package*.json ./
+COPY webpack.config.js ./
+COPY static/src/ static/src/
+
+# Install deps and build
+RUN npm install
+RUN npm run build
+
+# --------- Stage 2: Python Backend ---------
 FROM python:3.10-slim-bullseye
 
 ENV PYTHONUNBUFFERED=1
 
-# Install OS dependencies and Node.js 18 from NodeSource properly
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    curl \
-    gnupg \
-    ca-certificates \
-    gcc \
     libcairo2-dev \
-    wkhtmltopdf
+    gcc \
+    wkhtmltopdf \
+    curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Add NodeSource Node.js 18 repo and install
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
 
-# Set working directory
-WORKDIR /app/
-
-# Copy only package.json and install JS dependencies
-COPY package*.json ./
-RUN npm install
-
-# Copy rest of the app
+# Copy entire backend
 COPY . .
 
-# Build React components
-RUN npm run build
+# Copy built React assets from previous stage
+COPY --from=frontend-builder /app/static/dist/ ./static/dist/
 
-# Make entrypoint executable
-RUN chmod +x /app/entrypoint.sh
-
-# Install Python requirements
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose Django default port
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 8000
 
-# Run Django
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
