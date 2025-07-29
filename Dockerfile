@@ -4,9 +4,9 @@ FROM node:18 AS frontend-builder
 WORKDIR /app
 
 # Copy only frontend source and package files
-COPY HRMS/package*.json ./
-COPY HRMS/webpack.config.js ./
-COPY HRMS/static/src/ static/src/
+COPY package*.json ./
+COPY webpack.config.js ./
+COPY static/src/ static/src/
 
 # Install deps and build
 RUN npm install
@@ -35,7 +35,7 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy built React assets from previous stage
-COPY --from=frontend-builder /app/static/dist/ HRMS/static/dist/
+COPY --from=frontend-builder /app/static/dist/ ./static/dist/
 
 RUN chmod +x /app/entrypoint.sh
 
