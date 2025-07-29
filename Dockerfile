@@ -39,6 +39,9 @@ COPY --from=frontend-builder /app/static/dist/ ./static/dist/
 
 RUN chmod +x /app/entrypoint.sh
 
+RUN npm install
+RUN npm run build
+
 EXPOSE 8000
 
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
