@@ -75,26 +75,93 @@ const IntegrationsApp = () => {
           if (data.success) {
             // Show a modal with the Slack configuration form
             setModalContent(`
-              <div style="padding: 20px;">
-                <h3 style="margin-bottom: 20px; color: #333;">Configure Slack Integration</h3>
-                <form id="slack-config-form">
-                  <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Client ID:</label>
-                    <input type="text" name="client_id" value="${data.form_data.client_id}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required />
+              <div style="background: white; border-radius: 8px; max-width: 480px; margin: 10px auto; position: relative;">
+                <!-- Header -->
+                <div style="padding: 12px 16px; border-bottom: 1px solid #e5e7eb;">
+                  <h3 style="margin: 0; color: #374151; font-size: 15px; font-weight: 600;">Configure Slack Integration</h3>
+                </div>
+                
+                <!-- Form Content -->
+                <form id="slack-config-form" style="padding: 16px;">
+                  
+                  <!-- Client ID Field -->
+                  <div style="margin-bottom: 12px;">
+                    <label style="display: block; margin-bottom: 3px; font-weight: 600; color: #374151; font-size: 12px;">
+                      Client ID <span style="color: #ef4444;">*</span>
+                    </label>
+                    <input type="text" name="client_id" value="${data.form_data.client_id}" 
+                           style="width: 100%; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px; box-sizing: border-box; background: white;" 
+                           required />
                   </div>
-                  <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Client Secret:</label>
-                    <input type="password" name="client_secret" value="${data.form_data.client_secret}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required />
+                  
+                  <!-- Client Secret Field -->
+                  <div style="margin-bottom: 12px;">
+                    <label style="display: block; margin-bottom: 3px; font-weight: 600; color: #374151; font-size: 12px;">
+                      Client Secret <span style="color: #ef4444;">*</span>
+                    </label>
+                    <input type="password" name="client_secret" value="${data.form_data.client_secret}" 
+                           style="width: 100%; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px; box-sizing: border-box; background: white;" 
+                           required />
                   </div>
-                  <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Redirect URI:</label>
-                    <input type="text" name="redirect_uri" value="${data.form_data.redirect_uri}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required />
+                  
+                  <!-- Redirect URI Field -->
+                  <div style="margin-bottom: 12px;">
+                    <label style="display: block; margin-bottom: 3px; font-weight: 600; color: #374151; font-size: 12px;">
+                      Redirect URI <span style="color: #ef4444;">*</span>
+                    </label>
+                    <input type="text" name="redirect_uri" value="${data.form_data.redirect_uri}" 
+                           style="width: 100%; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px; box-sizing: border-box; background: white;" 
+                           required />
                   </div>
-                  <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Scopes:</label>
-                    <input type="text" name="scopes" value="${data.form_data.scopes}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required />
+                  
+                  <!-- Notification Settings Section -->
+                  <div style="margin-bottom: 12px;">
+                    <label style="display: block; margin-bottom: 3px; font-weight: 600; color: #374151; font-size: 12px;">
+                      Notification Settings
+                    </label>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                      <!-- Birthday Notifications Checkbox -->
+                      <div style="display: flex; align-items: flex-start; gap: 8px;">
+                        <input type="checkbox" name="send_birthday_notifications" ${data.form_data.send_birthday_notifications ? 'checked' : ''} 
+                               style="margin-top: 0px; width: 12px; height: 12px; accent-color: #3b82f6;" />
+                        <div>
+                          <div style="font-weight: 600; color: #374151; font-size: 12px; margin-bottom: 1px;">
+                            Birthday & Anniversary Notifications
+                          </div>
+                          <div style="color: #6b7280; font-size: 11px;">
+                            Send birthday and work anniversary notifications to your team
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Attendance Notifications Checkbox -->
+                      <div style="display: flex; align-items: flex-start; gap: 8px;">
+                        <input type="checkbox" name="send_attendance_notifications" ${data.form_data.send_attendance_notifications ? 'checked' : ''} 
+                               style="margin-top: 0px; width: 12px; height: 12px; accent-color: #3b82f6;" />
+                        <div>
+                          <div style="font-weight: 600; color: #374151; font-size: 12px; margin-bottom: 1px;">
+                            Attendance Notifications
+                          </div>
+                          <div style="color: #6b7280; font-size: 11px;">
+                            Send clock-in and clock-out notifications to your team
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <button type="submit" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">Save & Connect</button>
+                  
+                  <!-- Action Buttons -->
+                  <div style="display: flex; justify-content: flex-end; gap: 8px; padding-top: 10px; border-top: 1px solid #e5e7eb;">
+                    <button type="button" onclick="this.closest('.modal').style.display='none'" 
+                            style="background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer;">
+                      Cancel
+                    </button>
+                    <button type="submit" 
+                            style="background: #f97316; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer;">
+                      Save & Connect
+                    </button>
+                  </div>
                 </form>
               </div>
             `);
